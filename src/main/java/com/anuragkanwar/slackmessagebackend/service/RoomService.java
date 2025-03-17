@@ -6,5 +6,10 @@ import com.anuragkanwar.slackmessagebackend.model.domain.User;
 import java.util.List;
 
 public interface RoomService {
-    List<Room> findRoomsByUser(User user);
+    Room save(Room room);
+
+    boolean existsRoomByName(String name);
+
+    Room getRoomById(Long id);
+
 }

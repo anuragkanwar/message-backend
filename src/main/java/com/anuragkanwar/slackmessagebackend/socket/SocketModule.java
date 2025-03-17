@@ -7,6 +7,7 @@ import com.anuragkanwar.slackmessagebackend.model.domain.Room;
 import com.anuragkanwar.slackmessagebackend.model.domain.User;
 import com.anuragkanwar.slackmessagebackend.model.enums.EventType;
 import com.anuragkanwar.slackmessagebackend.repository.RoomRepository;
+import com.anuragkanwar.slackmessagebackend.service.UserService;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
@@ -23,10 +24,10 @@ import java.util.List;
 public class SocketModule {
 
     @Autowired
-    private RoomRepository roomRepository;
+    private UserService userService;
 
-    private final SocketIOServer server;
-    private final SocketService socketService;
+    public final SocketIOServer server;
+    public final SocketService socketService;
 
     public SocketModule(SocketIOServer server, SocketService socketService) {
         log.info("Inside SocketModule Constructor");
@@ -36,6 +37,8 @@ public class SocketModule {
         server.addDisconnectListener(onDisconnected());
         server.addEventListener("send_message", Chat.class, onChatReceived());
     }
+
+
 
     private DataListener<Chat> onChatReceived() {
         log.info("Inside OnChatReceived");
@@ -49,14 +52,16 @@ public class SocketModule {
         log.info("Inside OnConnected");
         return (client) -> {
             var params = client.getHandshakeData().getUrlParams();
-            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getDetails();
-            List<Room> rooms = roomRepository.findRoomsByUser(User.builder().id(userDetails.getId()).username(userDetails.getUsername()).username(userDetails.getUsername()).build());
+            UserDetailsImpl userDetails = client.get("user");
+//            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getDetails();
+            System.out.println(userDetails);
+            List<Room> rooms = userService.findAllRoomsByUserId(userDetails.getId());
 
             for (Room room : rooms) {
                 String username = userDetails.getUsername();
                 client.joinRoom(room.getId().toString());
                 socketService.saveEventLog(String.format(Constants.WELCOME_MESSAGE, username), room.getId().toString(), EventType.SERVER);
-                log.info("Socket ID[{}] - room[{}] - username [{}]  Connected to chat module through", client.getSessionId().toString(), room, username);
+                log.info("Socket ID[{}] - room[{}] - username [{}]  Connected to chat module through", client.getSessionId().toString(), room.getName(), username);
             }
         };
     }
@@ -64,7 +69,8 @@ public class SocketModule {
     private DisconnectListener onDisconnected() {
         log.info("Inside OnDisconnected");
         return client -> {
-            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getDetails();
+            UserDetailsImpl userDetails = client.get("user");
+//            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getDetails();
             String username = userDetails.getUsername();
             String room = "All";
             socketService.saveEventLog(String.format(Constants.WELCOME_MESSAGE, username), room, EventType.SERVER);

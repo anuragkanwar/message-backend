@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -42,6 +43,7 @@ public class AppSecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, OrderedFormContentFilter formContentFilter) throws Exception {
         return http
                 .csrf(CsrfConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowCredentials(true);
@@ -70,14 +72,4 @@ public class AppSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
-    @Bean
-    public CommandLineRunner initRolesData(RoleRepository roleRepository) {
-        return args -> {
-            for (RoleType roleType : RoleType.values()) {
-                roleRepository.findRoleByRole(roleType)
-                        .orElseGet(() -> roleRepository.save(Role.builder().id((long) roleType.ordinal()).role(roleType).build()));
-            }
-        };
-    }
 }

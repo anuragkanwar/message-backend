@@ -2,7 +2,10 @@ package com.anuragkanwar.slackmessagebackend.repository;
 
 import com.anuragkanwar.slackmessagebackend.model.domain.Room;
 import com.anuragkanwar.slackmessagebackend.model.domain.User;
+import com.anuragkanwar.slackmessagebackend.model.domain.Workspace;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,4 +20,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
+    @Query("SELECT r FROM Room r JOIN r.users u where u.id = :userId")
+    List<Room> findAllRoomsByUserId(@Param("userId") Long userId);
+
+    User getUserById(Long id);
+
+    User getUserByUsername(String username);
 }

@@ -5,10 +5,12 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Builder
+@SuperBuilder
 @Entity
+@Table(name = "\"User\"")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,8 +29,9 @@ public class User extends AbstractAuditingEntity {
     private String password;
 
     @ManyToMany
-    private Set<Room> rooms = new HashSet<>();
-
-    @ManyToMany
     private Set<Role> roles = new HashSet<>();
+
+    @ManyToMany(mappedBy = "users")
+    private Set<Room> rooms = new LinkedHashSet<>();
+
 }

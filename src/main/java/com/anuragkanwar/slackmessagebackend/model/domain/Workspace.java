@@ -6,14 +6,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.util.Set;
-
 @SuperBuilder
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Worskspace extends AbstractAuditingEntity{
+public class Workspace extends AbstractAuditingEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

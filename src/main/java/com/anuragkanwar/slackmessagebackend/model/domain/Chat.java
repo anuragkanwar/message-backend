@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Chat extends AbstractAuditingEntity {
 
     @Id
@@ -20,7 +21,7 @@ public class Chat extends AbstractAuditingEntity {
     @Enumerated(EnumType.STRING)
     private ChatType messageType;
 
-    @Column(nullable = false, columnDefinition = "jsonb")
+    @Column(nullable = false)
     private String message;
 
     @Column(nullable = false)
@@ -32,10 +33,10 @@ public class Chat extends AbstractAuditingEntity {
     @OneToOne(cascade = CascadeType.ALL)
     private Chat parent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Room room;
 
 }

@@ -21,7 +21,7 @@ public class Constants {
     public static final long USER_EXPIRES_AFTER_MINUTES = Duration.ofMinutes(30).toMinutes();
     public static final long VALID_START_DATE_AFTER_MINUTES = Duration.ofMinutes(30).toMinutes();
 
-    public static final String JWT_SECRET_KEY = "Ght$85FvnjU54fhGF4578JNKkhfR%)(utVjh"; // dev Only
+    public static final String JWT_SECRET_KEY = "Ght385FvnjU54fhasjkdjahl798q9dlashdohi0GF4578JNKkhfR466utVjh"; // dev Only
     public static final Long JWT_TOKEN_EXPIRES_AFTER = 604800000L;
 
     /**

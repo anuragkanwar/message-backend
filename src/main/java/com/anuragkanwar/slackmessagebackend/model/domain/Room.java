@@ -19,7 +19,7 @@ public class Room extends AbstractAuditingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column
@@ -29,8 +29,8 @@ public class Room extends AbstractAuditingEntity {
     private boolean is_private;
 
     @ManyToOne
-    private Worskspace worskspace;
+    private Workspace worskspace;
 
-    @ManyToMany(mappedBy = "rooms")
+    @ManyToMany
     private Set<User> users = new LinkedHashSet<>();
 }
