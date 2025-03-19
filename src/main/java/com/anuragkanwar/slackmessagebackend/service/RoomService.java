@@ -12,4 +12,9 @@ public interface RoomService {
 
     Room getRoomById(Long id);
 
+    Room addUserToRoom(Long userId, Long roomId);
+
+    Room removeUserFromRoom(Long userId, Long roomId);
+
+    Room addUsersToRoom(Long roomId, List<User> users);
 }
