@@ -1,8 +1,11 @@
 package com.anuragkanwar.slackmessagebackend.controller;
 
 import com.anuragkanwar.slackmessagebackend.model.domain.Room;
+import com.anuragkanwar.slackmessagebackend.model.dto.RoomDto;
+import com.anuragkanwar.slackmessagebackend.model.dto.requests.UpdateUserInRoomDto;
 import com.anuragkanwar.slackmessagebackend.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,23 +15,26 @@ public class RoomController {
     @Autowired
     private RoomService roomService;
 
+
     @PostMapping
-    public Room createNewRoom(Room room){
-        return roomService.save(room);
+    public ResponseEntity<?> createNewRoom(@RequestBody Room room) {
+        return ResponseEntity.ok().body(RoomDto.toDto(roomService.save(room)));
     }
 
     @DeleteMapping
-    public void deleteRoomById(Long id){
-        return roomService
+    public ResponseEntity<?> deleteRoomById(@RequestBody Long id) {
+        return ResponseEntity.ok().body(RoomDto.toDto(roomService.deleteRoom(id)));
     }
 
     @PatchMapping("/user")
-    public Room addUserToRoom(@RequestBody Long userId, @RequestBody Long roomId){
-        return roomService.addUserToRoom(userId, roomId);
+    public ResponseEntity<?> addUserToRoom(@RequestBody UpdateUserInRoomDto updateUserInRoomDto) {
+        return ResponseEntity.ok().body(RoomDto.toDto(roomService.addUserToRoom(updateUserInRoomDto.getUserId(), updateUserInRoomDto.getRoomId())));
     }
 
     @DeleteMapping("/user")
-    public Room removeUserFromRoom(@RequestBody Long userId, @RequestBody Long roomId){
-        return roomService.removeUserFromRoom(userId, roomId);
+    public ResponseEntity<?> removeUserFromRoom(@RequestBody UpdateUserInRoomDto updateUserInRoomDto) {
+        return ResponseEntity.ok().body(RoomDto.toDto(roomService.removeUserFromRoom(updateUserInRoomDto.getUserId(), updateUserInRoomDto.getRoomId()
+
+        )));
     }
 }

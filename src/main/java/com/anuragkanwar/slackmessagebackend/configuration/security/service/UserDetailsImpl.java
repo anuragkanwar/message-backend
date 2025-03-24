@@ -1,6 +1,7 @@
 package com.anuragkanwar.slackmessagebackend.configuration.security.service;
 
 import com.anuragkanwar.slackmessagebackend.model.domain.User;
+import com.anuragkanwar.slackmessagebackend.model.domain.Workspace;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,11 +9,10 @@ import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serial;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -31,7 +31,7 @@ public class UserDetailsImpl implements UserDetails {
 
     public static UserDetailsImpl build(User user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getRole().name()))
+                .map(role -> new SimpleGrantedAuthority(role.getRole().name() ))
                 .collect(Collectors.toList());
 
         return new UserDetailsImpl(

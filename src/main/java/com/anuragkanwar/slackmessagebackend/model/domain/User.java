@@ -1,11 +1,13 @@
 package com.anuragkanwar.slackmessagebackend.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @SuperBuilder
@@ -28,10 +30,24 @@ public class User extends AbstractAuditingEntity {
     @Column(nullable = false)
     private String password;
 
+    @ManyToMany(mappedBy = "users")
+    private Set<Workspace> workspaces = new HashSet<>();
+
     @ManyToMany
     private Set<Role> roles = new HashSet<>();
 
     @ManyToMany(mappedBy = "users")
     private Set<Room> rooms = new LinkedHashSet<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

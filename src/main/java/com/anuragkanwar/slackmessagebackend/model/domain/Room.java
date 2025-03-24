@@ -1,5 +1,6 @@
 package com.anuragkanwar.slackmessagebackend.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -29,7 +30,10 @@ public class Room extends AbstractAuditingEntity {
     private boolean is_private;
 
     @ManyToOne
-    private Workspace worskspace;
+    private Workspace workspace;
+
+    @ManyToOne
+    private User creator;
 
     @ManyToMany
     private Set<User> users = new LinkedHashSet<>();

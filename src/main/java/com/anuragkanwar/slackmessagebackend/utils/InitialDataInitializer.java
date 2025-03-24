@@ -1,11 +1,7 @@
 package com.anuragkanwar.slackmessagebackend.utils;
 
 import com.anuragkanwar.slackmessagebackend.model.domain.Role;
-import com.anuragkanwar.slackmessagebackend.model.domain.Room;
-import com.anuragkanwar.slackmessagebackend.model.domain.User;
-import com.anuragkanwar.slackmessagebackend.model.domain.Workspace;
 import com.anuragkanwar.slackmessagebackend.model.enums.RoleType;
-import com.anuragkanwar.slackmessagebackend.repository.RoleRepository;
 import com.anuragkanwar.slackmessagebackend.repository.WorkspaceRepository;
 import com.anuragkanwar.slackmessagebackend.service.RoleService;
 import com.anuragkanwar.slackmessagebackend.service.RoomService;
@@ -15,9 +11,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.HashSet;
-import java.util.List;
 
 @Component
 public class InitialDataInitializer implements ApplicationRunner {

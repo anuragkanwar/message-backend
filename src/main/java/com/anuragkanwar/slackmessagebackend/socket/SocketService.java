@@ -2,7 +2,6 @@ package com.anuragkanwar.slackmessagebackend.socket;
 
 import com.anuragkanwar.slackmessagebackend.model.domain.Chat;
 import com.anuragkanwar.slackmessagebackend.model.domain.Event;
-import com.anuragkanwar.slackmessagebackend.model.domain.Room;
 import com.anuragkanwar.slackmessagebackend.model.enums.EventType;
 import com.anuragkanwar.slackmessagebackend.service.ChatService;
 import com.anuragkanwar.slackmessagebackend.service.EventService;

@@ -4,7 +4,6 @@ package com.anuragkanwar.slackmessagebackend.controller;
 import com.anuragkanwar.slackmessagebackend.model.domain.Chat;
 import com.anuragkanwar.slackmessagebackend.service.ChatService;
 import com.anuragkanwar.slackmessagebackend.socket.SocketModule;
-import com.anuragkanwar.slackmessagebackend.socket.SocketService;
 import com.corundumstudio.socketio.SocketIOClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 @RestController
-@RequestMapping("/message")
+@RequestMapping("/api/message")
 @RequiredArgsConstructor
 @Slf4j
 public class ChatController {

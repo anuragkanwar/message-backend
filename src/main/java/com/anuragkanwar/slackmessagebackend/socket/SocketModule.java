@@ -53,7 +53,6 @@ public class SocketModule {
         return (client) -> {
             var params = client.getHandshakeData().getUrlParams();
             UserDetailsImpl userDetails = client.get("user");
-//            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getDetails();
             System.out.println(userDetails);
             List<Room> rooms = userService.findAllRoomsByUserId(userDetails.getId());
 
@@ -70,7 +69,6 @@ public class SocketModule {
         log.info("Inside OnDisconnected");
         return client -> {
             UserDetailsImpl userDetails = client.get("user");
-//            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getDetails();
             String username = userDetails.getUsername();
             String room = "All";
             socketService.saveEventLog(String.format(Constants.WELCOME_MESSAGE, username), room, EventType.SERVER);

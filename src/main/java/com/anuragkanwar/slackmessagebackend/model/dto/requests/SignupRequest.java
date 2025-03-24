@@ -1,20 +1,16 @@
-package com.anuragkanwar.slackmessagebackend.model.dto;
+package com.anuragkanwar.slackmessagebackend.model.dto.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponse {
-    private Long id;
+public class SignupRequest {
     private String username;
     private String email;
-    private String jwt;
-    private List<String> roles;
+    private String password;
 }

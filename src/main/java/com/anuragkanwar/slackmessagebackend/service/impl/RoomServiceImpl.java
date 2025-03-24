@@ -5,9 +5,12 @@ import com.anuragkanwar.slackmessagebackend.model.domain.User;
 import com.anuragkanwar.slackmessagebackend.repository.RoomRepository;
 import com.anuragkanwar.slackmessagebackend.service.RoomService;
 import com.anuragkanwar.slackmessagebackend.service.UserService;
+import com.anuragkanwar.slackmessagebackend.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,12 +27,16 @@ public class RoomServiceImpl implements RoomService {
     @Autowired
     private UserService userService;
 
+    @Transactional
     public Room save(Room room) {
-        Set<User> users = new HashSet<>();
+        String username = Utils.getCurrentUsernameFromAuthentication(SecurityContextHolder.getContext().getAuthentication());
+        User user_c = userService.getUserByUsername(username);
+        room.getUsers().add(user_c);
+        room.setCreator(user_c);
+
         for (User user : room.getUsers()) {
-            users.add(userService.getUserById(user.getId()));
+            room.getUsers().add(userService.getUserById(user.getId()));
         }
-        room.setUsers(users);
         return roomRepository.save(room);
     }
 
@@ -49,7 +56,7 @@ public class RoomServiceImpl implements RoomService {
         User user = userService.getUserById(userId);
         Room room = getRoomById(roomId);
         room.getUsers().add(user);
-        return save(room);
+       return roomRepository.save(room);
     }
 
     @Override
@@ -57,7 +64,7 @@ public class RoomServiceImpl implements RoomService {
         User user = userService.getUserById(userId);
         Room room = getRoomById(roomId);
         room.getUsers().remove(user);
-        return save(room);
+        return roomRepository.save(room);
     }
 
     @Override
@@ -68,7 +75,16 @@ public class RoomServiceImpl implements RoomService {
         }
         Room room = getRoomById(roomId);
         room.getUsers().addAll(user);
-        return save(room);
+         return roomRepository.save(room);
     }
 
+    @Override
+    public Room deleteRoom(Long roomId) {
+        return roomRepository.deleteRoomById(roomId);
+    }
+
+    @Override
+    public Set<Room> getAllRoomByWorkspaceId(Long workspaceId) {
+        return roomRepository.findByWorkspace_Id(workspaceId);
+    }
 }

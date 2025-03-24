@@ -2,9 +2,14 @@ package com.anuragkanwar.slackmessagebackend.model.domain;
 
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @SuperBuilder
 @Entity
@@ -19,4 +24,13 @@ public class Workspace extends AbstractAuditingEntity{
 
     @Column(nullable = false, unique = true)
     private String name;
+
+    @ManyToMany
+    private Set<User> users = new HashSet<>();
+
+    @OneToOne
+    private User creator;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Room> rooms = new HashSet<>();
 }

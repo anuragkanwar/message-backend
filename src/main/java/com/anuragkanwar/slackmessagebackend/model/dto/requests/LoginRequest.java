@@ -1,6 +1,5 @@
-package com.anuragkanwar.slackmessagebackend.model.dto;
+package com.anuragkanwar.slackmessagebackend.model.dto.requests;
 
-import jakarta.persistence.Entity;
 import lombok.*;
 
 @Builder

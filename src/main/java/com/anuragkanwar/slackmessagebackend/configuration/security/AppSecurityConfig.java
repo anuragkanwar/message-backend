@@ -3,11 +3,7 @@ package com.anuragkanwar.slackmessagebackend.configuration.security;
 import com.anuragkanwar.slackmessagebackend.configuration.security.jwt.AuthEntryPointJwt;
 import com.anuragkanwar.slackmessagebackend.configuration.security.jwt.AuthTokenFilter;
 import com.anuragkanwar.slackmessagebackend.constants.Constants;
-import com.anuragkanwar.slackmessagebackend.model.domain.Role;
-import com.anuragkanwar.slackmessagebackend.model.enums.RoleType;
-import com.anuragkanwar.slackmessagebackend.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.web.servlet.filter.OrderedFormContentFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,7 +50,7 @@ public class AppSecurityConfig {
                     config.setMaxAge(3600 * 7L);
                     return config;
                 }))
-                .authorizeHttpRequests(request -> request.requestMatchers("/api/auth/**").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(request -> request.requestMatchers("/api/auth/**").permitAll().requestMatchers("/error").permitAll().anyRequest().authenticated())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .formLogin(Customizer.withDefaults())
