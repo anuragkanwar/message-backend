@@ -36,6 +36,7 @@ public class SocketIOConfig {
         log.info("inside constructor");
         com.corundumstudio.socketio.Configuration config = new com.corundumstudio.socketio.Configuration();
         config.setPort(port);
+        config.setHostname("localhost");
         config.setAuthorizationListener(handshakeData -> {
             System.out.println(new ObjectMapper().valueToTree(handshakeData));
             HttpHeaders headers = handshakeData.getHttpHeaders();
