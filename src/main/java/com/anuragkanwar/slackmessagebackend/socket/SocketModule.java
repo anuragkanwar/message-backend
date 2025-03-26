@@ -4,9 +4,7 @@ import com.anuragkanwar.slackmessagebackend.configuration.security.service.UserD
 import com.anuragkanwar.slackmessagebackend.constants.Constants;
 import com.anuragkanwar.slackmessagebackend.model.domain.Chat;
 import com.anuragkanwar.slackmessagebackend.model.domain.Room;
-import com.anuragkanwar.slackmessagebackend.model.domain.User;
 import com.anuragkanwar.slackmessagebackend.model.enums.EventType;
-import com.anuragkanwar.slackmessagebackend.repository.RoomRepository;
 import com.anuragkanwar.slackmessagebackend.service.UserService;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
@@ -14,7 +12,6 @@ import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -75,6 +72,5 @@ public class SocketModule {
             log.info("Socket ID[{}] - room[{}] - username [{}]  disconnected to chat module through", client.getSessionId().toString(), room, username);
         };
     }
-
 
 }

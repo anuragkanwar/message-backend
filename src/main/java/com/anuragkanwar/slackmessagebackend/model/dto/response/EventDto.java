@@ -1,4 +1,4 @@
-package com.anuragkanwar.slackmessagebackend.model.dto;
+package com.anuragkanwar.slackmessagebackend.model.dto.response;
 
 import com.anuragkanwar.slackmessagebackend.model.domain.Event;
 import com.anuragkanwar.slackmessagebackend.model.enums.EventType;

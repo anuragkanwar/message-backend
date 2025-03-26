@@ -1,4 +1,4 @@
-package com.anuragkanwar.slackmessagebackend.model.dto.requests;
+package com.anuragkanwar.slackmessagebackend.model.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

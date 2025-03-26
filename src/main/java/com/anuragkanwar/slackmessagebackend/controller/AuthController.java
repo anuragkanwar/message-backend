@@ -1,7 +1,7 @@
 package com.anuragkanwar.slackmessagebackend.controller;
 
-import com.anuragkanwar.slackmessagebackend.model.dto.requests.LoginRequest;
-import com.anuragkanwar.slackmessagebackend.model.dto.requests.SignupRequest;
+import com.anuragkanwar.slackmessagebackend.model.dto.request.LoginRequest;
+import com.anuragkanwar.slackmessagebackend.model.dto.request.SignupRequest;
 import com.anuragkanwar.slackmessagebackend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

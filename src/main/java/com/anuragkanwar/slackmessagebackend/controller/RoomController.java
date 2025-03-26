@@ -1,8 +1,8 @@
 package com.anuragkanwar.slackmessagebackend.controller;
 
 import com.anuragkanwar.slackmessagebackend.model.domain.Room;
-import com.anuragkanwar.slackmessagebackend.model.dto.RoomDto;
-import com.anuragkanwar.slackmessagebackend.model.dto.requests.UpdateUserInRoomDto;
+import com.anuragkanwar.slackmessagebackend.model.dto.response.RoomDto;
+import com.anuragkanwar.slackmessagebackend.model.dto.request.UpdateUserInRoomDto;
 import com.anuragkanwar.slackmessagebackend.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

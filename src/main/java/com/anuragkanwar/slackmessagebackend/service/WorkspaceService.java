@@ -1,7 +1,7 @@
 package com.anuragkanwar.slackmessagebackend.service;
 
 import com.anuragkanwar.slackmessagebackend.model.domain.Workspace;
-import com.anuragkanwar.slackmessagebackend.model.dto.WorkspaceDto;
+import com.anuragkanwar.slackmessagebackend.model.dto.response.WorkspaceDto;
 
 
 public interface WorkspaceService {

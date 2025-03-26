@@ -1,8 +1,8 @@
 package com.anuragkanwar.slackmessagebackend.service.impl;
 
 import com.anuragkanwar.slackmessagebackend.configuration.security.jwt.JwtUtils;
-import com.anuragkanwar.slackmessagebackend.model.dto.requests.LoginRequest;
-import com.anuragkanwar.slackmessagebackend.model.dto.requests.SignupRequest;
+import com.anuragkanwar.slackmessagebackend.model.dto.request.LoginRequest;
+import com.anuragkanwar.slackmessagebackend.model.dto.request.SignupRequest;
 import com.anuragkanwar.slackmessagebackend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.anuragkanwar.slackmessagebackend.configuration.security.service.UserDetailsImpl;
 import com.anuragkanwar.slackmessagebackend.model.domain.Role;
 import com.anuragkanwar.slackmessagebackend.model.domain.User;
-import com.anuragkanwar.slackmessagebackend.model.dto.AuthResponse;
+import com.anuragkanwar.slackmessagebackend.model.dto.response.AuthResponse;
 import com.anuragkanwar.slackmessagebackend.model.enums.RoleType;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

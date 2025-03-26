@@ -1,7 +1,6 @@
-package com.anuragkanwar.slackmessagebackend.event;
+package com.anuragkanwar.slackmessagebackend.socket;
 
-public enum Event {
-
+public enum SocketEvent {
     dm_close, //You closed a DM
     dm_created, //A DM was created
     dm_open, //You opened a DM
@@ -39,5 +38,5 @@ public enum Event {
     user_change, //A member's data has changed
     user_profile_changed, //A user's profile has changed
     user_status_changed, //A user's status has changed
-    user_typing, //A room member is typing a message
+    user_typing;//A room member is typing a message
 }
