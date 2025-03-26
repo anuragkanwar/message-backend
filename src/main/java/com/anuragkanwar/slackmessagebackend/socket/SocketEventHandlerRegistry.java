@@ -1,38 +1,31 @@
 package com.anuragkanwar.slackmessagebackend.socket;
 
 import com.anuragkanwar.slackmessagebackend.socket.handlers.SocketEventHandler;
-import com.corundumstudio.socketio.SocketIOServer;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-@Service
-@Slf4j
-@RequiredArgsConstructor
+@Component
 public class SocketEventHandlerRegistry {
+    private final Map<SocketEvent, SocketEventHandler<?, ?>> handlers = new ConcurrentHashMap<>();
+    private final Map<SocketEvent, Class<?>> requestTypes = new ConcurrentHashMap<>();
 
-    private final List<SocketEventHandler> eventHandlers;
-    private final SocketIOServer server;
-
-    private final Map<SocketEvent, SocketEventHandler> eventHandlerMap = new HashMap<>();
-
-    @PostConstruct
-    public void registerEventHandlers() {
-        for (SocketEventHandler handler : eventHandlers) {
-            eventHandlerMap.put(handler.getEvent(), handler);
-            server.addEventListener(handler.getEvent().name(), Object.class, (client, data, ackSender) -> {
-                handler.handle(client, data[0]);//data is coming as array so we are sending data[0]
-            });
-            log.info("Registered event handler for: {}", handler.getEvent());
-        }
+    @Autowired
+    public SocketEventHandlerRegistry(List<SocketEventHandler<?, ?>> handlerList) {
+        handlerList.forEach(handler -> {
+            handlers.put(handler.getEventType(), handler);
+            requestTypes.put(handler.getEventType(), handler.getRequestType());
+        });
     }
 
-    public SocketEventHandler getHandler(SocketEvent event) {
-        return eventHandlerMap.get(event);
+    public SocketEventHandler<?, ?> getHandler(SocketEvent event) {
+        return handlers.get(event);
+    }
+
+    public Class<?> getRequestType(SocketEvent event) {
+        return requestTypes.get(event);
     }
 }
