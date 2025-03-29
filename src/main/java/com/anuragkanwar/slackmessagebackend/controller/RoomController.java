@@ -1,10 +1,8 @@
 package com.anuragkanwar.slackmessagebackend.controller;
 
-import com.anuragkanwar.slackmessagebackend.model.domain.Room;
-import com.anuragkanwar.slackmessagebackend.model.dto.response.RoomDto;
+import com.anuragkanwar.slackmessagebackend.model.dto.request.CreateRoomRequestDto;
 import com.anuragkanwar.slackmessagebackend.model.dto.request.UpdateUserInRoomDto;
 import com.anuragkanwar.slackmessagebackend.service.RoomService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,29 +10,63 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/room")
 public class RoomController {
 
-    @Autowired
-    private RoomService roomService;
+    private final RoomService roomService;
+
+    public RoomController(RoomService roomService) {
+        this.roomService = roomService;
+    }
 
 
     @PostMapping
-    public ResponseEntity<?> createNewRoom(@RequestBody Room room) {
-        return ResponseEntity.ok().body(RoomDto.toDto(roomService.save(room)));
+    public ResponseEntity<?> createNewRoom(@RequestBody CreateRoomRequestDto requestDto) {
+        roomService.save(requestDto);
+        return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteRoomById(@RequestBody Long id) {
-        return ResponseEntity.ok().body(RoomDto.toDto(roomService.deleteRoom(id)));
+    @GetMapping("/{roomId}")
+    public ResponseEntity<?> getRoomById(@PathVariable Long roomId) {
+        return ResponseEntity.ok()
+                .body(roomService.getRoomById(roomId));
     }
 
-    @PatchMapping("/user")
-    public ResponseEntity<?> addUserToRoom(@RequestBody UpdateUserInRoomDto updateUserInRoomDto) {
-        return ResponseEntity.ok().body(RoomDto.toDto(roomService.addUserToRoom(updateUserInRoomDto.getUserId(), updateUserInRoomDto.getRoomId())));
+    @DeleteMapping("/{roomId}")
+    public ResponseEntity<?> deleteRoomById(@PathVariable Long roomId) {
+        roomService.deleteRoom(roomId);
+        return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/user")
-    public ResponseEntity<?> removeUserFromRoom(@RequestBody UpdateUserInRoomDto updateUserInRoomDto) {
-        return ResponseEntity.ok().body(RoomDto.toDto(roomService.removeUserFromRoom(updateUserInRoomDto.getUserId(), updateUserInRoomDto.getRoomId()
-
-        )));
+    @PatchMapping("/{roomId}")
+    public ResponseEntity<?> updateRoom(
+            @RequestBody CreateRoomRequestDto requestDto,
+            @PathVariable Long roomId
+    ) {
+        roomService.updateRoom(requestDto, roomId);
+        return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{roomId}/history")
+    public ResponseEntity<?> getRoomWithChatsById(@PathVariable Long roomId) {
+        return ResponseEntity.ok()
+                .body(roomService.getRoomWithChatsById(roomId));
+    }
+
+    @PatchMapping("/{roomId}/user")
+    public ResponseEntity<?> addUserToRoom(
+            @RequestBody UpdateUserInRoomDto updateUserInRoomDto,
+            @PathVariable Long roomId
+    ) {
+        roomService.addUserToRoom(updateUserInRoomDto.getUserId(), roomId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{roomId}/user")
+    public ResponseEntity<?> removeUserFromRoom(
+            @RequestBody UpdateUserInRoomDto updateUserInRoomDto,
+            @PathVariable Long roomId
+    ) {
+        roomService.removeUserFromRoom(updateUserInRoomDto.getUserId(), roomId);
+        return ResponseEntity.ok().build();
+    }
+
+
 }

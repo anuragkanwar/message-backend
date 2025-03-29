@@ -9,5 +9,8 @@ import java.util.Set;
 @Repository
 public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
     boolean existsWorkspaceByName(String name);
+
     Workspace getWorkspacesById(Long id);
+
+    Set<Workspace> getWorkspacesByCreator_Id(Long creatorId);
 }

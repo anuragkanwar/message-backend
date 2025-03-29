@@ -28,7 +28,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
@@ -36,6 +37,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
                 UserDetails userDetails = userDetailService.loadUserByUsername(username);
+
+
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
@@ -53,7 +56,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     }
 
     private String parseJwt(HttpServletRequest request) {
-        String jwt = jwtUtils.getJWTFromHeader(request);
+        String jwt = jwtUtils.getJWTFromCookies(request);
         log.debug("AuthTokenFilter :: jwt - {}", jwt);
         return jwt;
     }

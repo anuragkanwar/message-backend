@@ -5,10 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class UpdateUserInRoomDto {
-    private Long userId;
+public class SignupRequestDto {
+    private String username;
+    private String email;
+    private String password;
 }

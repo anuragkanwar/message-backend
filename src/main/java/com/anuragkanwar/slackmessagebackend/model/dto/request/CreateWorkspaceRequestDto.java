@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UpdateUserInRoomDto {
-    private Long userId;
+public class CreateWorkspaceRequestDto {
+    private String name;
 }

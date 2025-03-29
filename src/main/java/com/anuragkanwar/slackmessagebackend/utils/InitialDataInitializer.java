@@ -1,9 +1,6 @@
 package com.anuragkanwar.slackmessagebackend.utils;
 
-import com.anuragkanwar.slackmessagebackend.model.domain.Role;
-import com.anuragkanwar.slackmessagebackend.model.enums.RoleType;
 import com.anuragkanwar.slackmessagebackend.repository.WorkspaceRepository;
-import com.anuragkanwar.slackmessagebackend.service.RoleService;
 import com.anuragkanwar.slackmessagebackend.service.RoomService;
 import com.anuragkanwar.slackmessagebackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +11,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class InitialDataInitializer implements ApplicationRunner {
-
-    @Autowired
-    private RoleService roleService;
 
     @Autowired
     private WorkspaceRepository workspaceRepository;
@@ -32,13 +26,13 @@ public class InitialDataInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        for (RoleType roleType : RoleType.values()) {
+        /*for (RoleType roleType : RoleType.values()) {
             if (!roleService.existsRoleByRole(roleType)) {
                 roleService.save(Role.builder().role(roleType).build());
             }
         }
 
-       /* System.out.println(workspaceRepository.existsWorkspaceByName("mainWorkspace"));
+        System.out.println(workspaceRepository.existsWorkspaceByName("mainWorkspace"));
         if (!workspaceRepository.existsWorkspaceByName("mainWorkspace")) {
             workspaceRepository.save(Workspace.builder().name("mainWorkSpace").build());
         }

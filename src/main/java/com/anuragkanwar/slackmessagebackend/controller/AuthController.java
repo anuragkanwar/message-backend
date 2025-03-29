@@ -1,9 +1,8 @@
 package com.anuragkanwar.slackmessagebackend.controller;
 
-import com.anuragkanwar.slackmessagebackend.model.dto.request.LoginRequest;
-import com.anuragkanwar.slackmessagebackend.model.dto.request.SignupRequest;
+import com.anuragkanwar.slackmessagebackend.model.dto.request.LoginRequestDto;
+import com.anuragkanwar.slackmessagebackend.model.dto.request.SignupRequestDto;
 import com.anuragkanwar.slackmessagebackend.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,17 +13,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
-        return authService.login(loginRequest);
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequestDto loginRequestDto) {
+        return authService.login(loginRequestDto);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
-        return authService.signup(signUpRequest);
+    public ResponseEntity<?> registerUser(@RequestBody SignupRequestDto signUpRequestDto) {
+        return authService.signup(signUpRequestDto);
     }
 
 }

@@ -1,11 +1,13 @@
 package com.anuragkanwar.slackmessagebackend.model.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.anuragkanwar.slackmessagebackend.model.enums.RoomType;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -27,7 +29,11 @@ public class Room extends AbstractAuditingEntity {
     private String description;
 
     @Column(nullable = false)
-    private boolean is_private;
+    @Enumerated(EnumType.STRING)
+    private RoomType roomType;
+
+    @OneToMany
+    private Set<Chat> chats = new HashSet<>();
 
     @ManyToOne
     private Workspace workspace;
@@ -36,5 +42,5 @@ public class Room extends AbstractAuditingEntity {
     private User creator;
 
     @ManyToMany
-    private Set<User> users = new LinkedHashSet<>();
+    private Set<User> users = new HashSet<>();
 }

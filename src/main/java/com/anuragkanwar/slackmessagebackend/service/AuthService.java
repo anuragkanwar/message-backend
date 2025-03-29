@@ -1,10 +1,10 @@
 package com.anuragkanwar.slackmessagebackend.service;
 
-import com.anuragkanwar.slackmessagebackend.model.dto.request.LoginRequest;
-import com.anuragkanwar.slackmessagebackend.model.dto.request.SignupRequest;
+import com.anuragkanwar.slackmessagebackend.model.dto.request.LoginRequestDto;
+import com.anuragkanwar.slackmessagebackend.model.dto.request.SignupRequestDto;
 import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
-    ResponseEntity<?> login(LoginRequest loginRequest);
-    ResponseEntity<?> signup(SignupRequest signupRequest);
+    ResponseEntity<?> login(LoginRequestDto loginRequestDto);
+    ResponseEntity<?> signup(SignupRequestDto signupRequestDto);
 }

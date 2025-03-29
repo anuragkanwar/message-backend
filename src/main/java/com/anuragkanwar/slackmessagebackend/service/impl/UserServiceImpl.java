@@ -5,7 +5,6 @@ import com.anuragkanwar.slackmessagebackend.model.domain.User;
 import com.anuragkanwar.slackmessagebackend.repository.UserRepository;
 import com.anuragkanwar.slackmessagebackend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +13,11 @@ import java.util.List;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public User insertNewUser(User user) {
@@ -50,5 +52,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long id) {
         return userRepository.getUserById(id);
+    }
+
+    @Override
+    public User getReferenceById(Long id){
+        if (id == null)
+            return null;
+        return userRepository.getReferenceById(id);
     }
 }

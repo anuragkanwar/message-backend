@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UpdateUserInRoomDto {
-    private Long userId;
+public class DeleteChatRequestDto {
+    private long chatId;
+    private long roomId;
 }

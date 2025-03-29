@@ -1,57 +1,64 @@
 package com.anuragkanwar.slackmessagebackend.service.impl;
 
 import com.anuragkanwar.slackmessagebackend.configuration.security.jwt.JwtUtils;
-import com.anuragkanwar.slackmessagebackend.model.dto.request.LoginRequest;
-import com.anuragkanwar.slackmessagebackend.model.dto.request.SignupRequest;
-import com.anuragkanwar.slackmessagebackend.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.anuragkanwar.slackmessagebackend.configuration.security.service.UserDetailsImpl;
+import com.anuragkanwar.slackmessagebackend.model.domain.User;
+import com.anuragkanwar.slackmessagebackend.model.dto.request.LoginRequestDto;
+import com.anuragkanwar.slackmessagebackend.model.dto.request.SignupRequestDto;
+import com.anuragkanwar.slackmessagebackend.model.dto.response.AuthResponseDto;
+import com.anuragkanwar.slackmessagebackend.service.AuthService;
+import com.anuragkanwar.slackmessagebackend.service.UserService;
+import com.anuragkanwar.slackmessagebackend.service.WorkspaceService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import com.anuragkanwar.slackmessagebackend.configuration.security.service.UserDetailsImpl;
-import com.anuragkanwar.slackmessagebackend.model.domain.Role;
-import com.anuragkanwar.slackmessagebackend.model.domain.User;
-import com.anuragkanwar.slackmessagebackend.model.dto.response.AuthResponse;
-import com.anuragkanwar.slackmessagebackend.model.enums.RoleType;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+    final AuthenticationManager authenticationManager;
+    final UserService userService;
+    final WorkspaceService workspaceService;
+    final PasswordEncoder encoder;
+    final JwtUtils jwtUtils;
 
-    @Autowired
-    UserService userService;
+    @Value("${socketio.host}")
+    private String socketioHost;
+    @Value("${socketio.port}")
+    private int socketioPort;
 
-    @Autowired
-    RoleService roleService;
-
-    @Autowired
-    WorkspaceService workspaceService;
-
-    @Autowired
-    PasswordEncoder encoder;
-
-    @Autowired
-    JwtUtils jwtUtils;
+    public AuthServiceImpl(AuthenticationManager authenticationManager, UserService userService,
+                           WorkspaceService workspaceService, PasswordEncoder encoder,
+                           JwtUtils jwtUtils) {
+        this.authenticationManager = authenticationManager;
+        this.userService = userService;
+        this.workspaceService = workspaceService;
+        this.encoder = encoder;
+        this.jwtUtils = jwtUtils;
+    }
 
     @Override
     @Transactional
-    public ResponseEntity<?> login(LoginRequest loginRequest) {
+    public ResponseEntity<?> login(LoginRequestDto loginRequestDto) {
         Authentication authentication;
         try {
-            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+            authentication =
+                    authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername()
+                                    , loginRequestDto.getPassword()));
         } catch (AuthenticationException e) {
             Map<String, Object> map = new HashMap<>();
             map.put("message", "Bad Credentials");
@@ -59,53 +66,74 @@ public class AuthServiceImpl implements AuthService {
             return new ResponseEntity<Object>(map, HttpStatus.NOT_FOUND);
         }
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-        String jwt = jwtUtils.generateTokenFromUserDetails(userDetails);
 
-        return ResponseEntity.ok(
-                AuthResponse.builder()
+        String jwtToken = jwtUtils.generateTokenFromUserDetails(userDetails);
+
+        ResponseCookie cookie = ResponseCookie.from("token", jwtToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(Duration.ofDays(7))
+                .sameSite("Lax")
+                .build();
+
+        String websocketUrl = String.format("ws://%s:%d", socketioHost, socketioPort);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(AuthResponseDto.builder()
                         .id(userDetails.getId())
                         .username(userDetails.getUsername())
                         .email(userDetails.getEmail())
-                        .jwt(jwt)
-                        .roles(new HashSet<>(roles))
-                        .build()
-        );
+                        .wsUrl(websocketUrl)
+                        .build());
     }
 
     @Override
     @Transactional
-    public ResponseEntity<?> signup(SignupRequest signUpRequest) {
-        if (userService.existsByUsername(signUpRequest.getUsername())) {
+    public ResponseEntity<?> signup(SignupRequestDto signUpRequestDto) {
+        if (userService.existsByUsername(signUpRequestDto.getUsername())) {
             return ResponseEntity.badRequest().body("Error: Username is already taken!");
         }
 
-        if (userService.existsByEmail(signUpRequest.getEmail())) {
+        if (userService.existsByEmail(signUpRequestDto.getEmail())) {
             return ResponseEntity.badRequest().body("Error: Email is already in use!");
         }
 
         User user = User.builder()
-                .username(signUpRequest.getUsername())
-                .email(signUpRequest.getEmail())
-                .password(encoder.encode(signUpRequest.getPassword()))
+                .username(signUpRequestDto.getUsername())
+                .email(signUpRequestDto.getEmail())
+                .password(encoder.encode(signUpRequestDto.getPassword()))
                 .build();
 
-        Set<Role> roles = new HashSet<>();
-        roles.add(roleService.getRoleByRole((RoleType.USER)));
-        user.setRoles(roles);
-        User userDetails = userService.save(user);
-        String jwt = jwtUtils.generateTokenFromUserDetails(UserDetailsImpl.build(userDetails));
-        return ResponseEntity.ok(
-                AuthResponse.builder()
-                        .id(userDetails.getId())
-                        .username(userDetails.getUsername())
-                        .email(userDetails.getEmail())
-                        .jwt(jwt)
-                        .roles(userDetails.getRoles().stream().map(Role::toString).collect(Collectors.toSet()))
-                        .build()
-        );
+        User savedUser = userService.save(user);
+
+        String jwtToken = jwtUtils.generateTokenFromUserDetails(UserDetailsImpl.builder()
+                .email(savedUser.getEmail())
+                .username(savedUser.getUsername())
+                .id(savedUser.getId())
+                .authorities(null)
+                .password(savedUser.getPassword())
+                .build());
+
+        ResponseCookie cookie = ResponseCookie.from("token", jwtToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(Duration.ofDays(7))
+                .sameSite("Lax")
+                .build();
+
+        String websocketUrl = String.format("ws://%s:%d", socketioHost, socketioPort);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(AuthResponseDto.builder()
+                        .id(savedUser.getId())
+                        .username(savedUser.getUsername())
+                        .email(savedUser.getEmail())
+                        .wsUrl(websocketUrl)
+                        .build());
     }
 }

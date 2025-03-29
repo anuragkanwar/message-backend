@@ -33,9 +33,6 @@ public class User extends AbstractAuditingEntity {
     @ManyToMany(mappedBy = "users")
     private Set<Workspace> workspaces = new HashSet<>();
 
-    @ManyToMany
-    private Set<Role> roles = new HashSet<>();
-
     @ManyToMany(mappedBy = "users")
     private Set<Room> rooms = new LinkedHashSet<>();
 

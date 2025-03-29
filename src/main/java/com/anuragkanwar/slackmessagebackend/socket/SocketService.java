@@ -19,26 +19,6 @@ public class SocketService {
     @Autowired
     private EventService eventService;
 
-    @Autowired
-    private ChatService chatService;
-
-    public void sendSocketMessage(SocketIOClient senderClient, Chat chat) {
-
-        log.info("inside sendSocketMessage");
-        for (SocketIOClient client : senderClient.getNamespace().getRoomOperations(chat.getRoom().getId().toString()).getClients()) {
-            if (!client.getSessionId().equals(senderClient.getSessionId())) {
-                client.sendEvent("read_message", chat);
-            }
-        }
-    }
-
-    public void saveMessage(SocketIOClient senderClient, Chat chat) {
-        log.debug("inside saveMessage");
-        sendSocketMessage(senderClient, chat);
-        chatService.saveChat(chat);
-        this.saveEventLog(chat.getMessage(), chat.getRoom().getId().toString(), EventType.CLIENT);
-    }
-
     public void saveEventLog( String message, String room, EventType eventType) {
         log.debug("inside saveInfoMessage");
         eventService.save(

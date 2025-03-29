@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UpdateUserInRoomDto {
-    private Long userId;
+public class CreateChatRequestDto {
+    private Long roomId;
+    private String message;
+    private Long parentId;
 }

@@ -20,29 +20,35 @@ import java.util.Map;
 @Slf4j
 public class SocketIOConfig {
 
-    @Value("${socket-server.port}")
-    private Integer port;
+    @Value("${socketio.host}")
+    private String socketioHost;
 
-    @Autowired
-    private JwtUtils jwtUtils;
+    @Value("${socketio.port}")
+    private int socketioPort;
 
-    @Autowired
-    private UserDetailServiceImpl userDetailService;
 
+    private final JwtUtils jwtUtils;
+    private final UserDetailServiceImpl userDetailService;
+
+    public SocketIOConfig( JwtUtils jwtUtils, UserDetailServiceImpl userDetailService) {
+        this.jwtUtils = jwtUtils;
+        this.userDetailService = userDetailService;
+    }
 
     @Bean
     public SocketIOServer socketIOServer() {
 
         log.info("inside constructor");
         com.corundumstudio.socketio.Configuration config = new com.corundumstudio.socketio.Configuration();
-        config.setPort(port);
-        config.setHostname("localhost");
+        config.setPort(socketioPort);
+        config.setHostname(socketioHost);
         config.setAuthorizationListener(handshakeData -> {
-            System.out.println(new ObjectMapper().valueToTree(handshakeData));
-            HttpHeaders headers = handshakeData.getHttpHeaders();
-            for (Map.Entry<String, String> header : headers) {
-                System.out.println(header.getKey() + ":" + header.getValue());
+
+            if(log.isDebugEnabled()){
+                log.debug("Handshake data : {}", handshakeData);
             }
+
+            HttpHeaders headers = handshakeData.getHttpHeaders();
             String jwt = headers.get("Authorization");
             UserDetails userDetails = null;
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {

@@ -17,18 +17,11 @@ public class Chat extends AbstractAuditingEntity {
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
-    @Column
-    @Enumerated(EnumType.STRING)
-    private ChatType messageType;
-
     @Column(nullable = false)
     private String message;
 
-    @Column(nullable = false)
-    private int total_replies;
-
-    @Column(nullable = false)
-    private boolean is_deleted;
+    @Enumerated(EnumType.STRING)
+    private ChatType chatType;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Chat parent;
